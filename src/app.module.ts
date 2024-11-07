@@ -12,6 +12,10 @@ import { ClassesModule } from './classes/classes.module';
 import { AttendanceModule } from './attendance/attendance.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { EnrollmentsModule } from './enrollments/enrollments.module';
+import { StudentModule } from './sudent/sudent.module';
+import { AdminModule } from './admin/admin.module';
+import { APP_GUARD } from '@nestjs/core';
+// import { IsCreatorGuard } from './guard/isCreator-guard';
 
 @Module({
   imports: [
@@ -24,11 +28,12 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
       host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT),
       username: process.env.DATABASE,
-      password: process.env.DB_PASSWORD,
+      password: "laziz2005",
       database: process.env.DB_USERNAME,
       autoLoadModels: true,
       synchronize: true, 
     }),
+    
     UserModule,
     RoleModule,
     ParentModule,
@@ -40,8 +45,15 @@ import { EnrollmentsModule } from './enrollments/enrollments.module';
     AttendanceModule,
     TeachersModule,
     EnrollmentsModule,
+    StudentModule,
+    AdminModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: IsCreatorGuard,
+    // },
+  ],
 })
 export class AppModule {}

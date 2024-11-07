@@ -5,9 +5,15 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Parent } from './models/parent.model';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { StudentParents } from './models/studentparents.model';
+import { StudentModule } from '../sudent/sudent.module';
+import { ApiTags } from '@nestjs/swagger';
 
+
+
+@ApiTags('Parent Module')
 @Module({
-  imports: [SequelizeModule.forFeature([Parent]),
+  imports: [SequelizeModule.forFeature([Parent,StudentParents]),
   JwtModule.registerAsync({
     imports: [ConfigModule],
     inject: [ConfigService],
@@ -16,6 +22,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       signOptions: { expiresIn: process.env.ACCESS_TOKEN_TIME },
     }),
   }),
+  StudentModule
 
 ],
   exports: [ParentService],

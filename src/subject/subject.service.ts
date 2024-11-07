@@ -3,11 +3,14 @@ import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Subjects } from './models/subject.model';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Injectable()
 export class SubjectService {
   constructor(@InjectModel(Subjects) private readonly subjectModel: typeof Subjects){}
 
+
+  @ApiProperty({ description: 'Create a new subject' })
   create(createSubjectDto: CreateSubjectDto) {
     try {
       const subject = this.subjectModel.create(createSubjectDto);
@@ -20,6 +23,8 @@ export class SubjectService {
     }
   }
 
+
+  @ApiProperty({ description: 'Get all subjects' })
   findAll() {
     try {
       const subject = this.subjectModel.findAll();
@@ -32,6 +37,9 @@ export class SubjectService {
     }
   }
 
+  @ApiProperty({
+    description: 'Update an existing subject by ID',
+  })
   findOne(id: number) {
     try {
       const subject = this.subjectModel.findByPk(id);
@@ -47,7 +55,9 @@ export class SubjectService {
       
     }
   }
-
+  @ApiProperty({
+    description: 'Update an existing subject by ID',
+  })
   async update(id: number, updateSubjectDto: UpdateSubjectDto) {
     try {
       const subject = await this.findOne(id);
@@ -67,6 +77,10 @@ export class SubjectService {
     
   }
 
+
+  @ApiProperty({
+    description: 'Remove an existing subject by ID',
+  })
   async remove(id: number) {
     try {
       const subject = await this.findOne(id);

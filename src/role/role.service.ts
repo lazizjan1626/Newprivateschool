@@ -3,6 +3,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role } from './models/role.model';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Injectable()
 export class RoleService {
@@ -11,6 +12,10 @@ export class RoleService {
     private readonly roleModel: typeof Role
   ) {}
 
+  @ApiOperation({ summary: 'Create a new role' })
+  @ApiResponse({ status: 201, description: 'Role created successfully', type: Role })
+  @ApiResponse({ status: 409, description: 'Role with the given name already exists' })
+  @ApiResponse({ status: 500, description: 'Failed to create role due to server error' })
   async create(createRoleDto: CreateRoleDto) {
     try {
       const existingRole = await this.roleModel.findOne({
@@ -28,6 +33,11 @@ export class RoleService {
     }
   }
 
+
+  @ApiOperation({
+    summary: 'Update a role by ID',
+    description: 'Fields marked with * are required',
+  })
   async findAll() {
     try {
       return await this.roleModel.findAll();
@@ -37,6 +47,10 @@ export class RoleService {
     }
   }
 
+
+  @ApiOperation({ summary: 'Retrieve a role by ID' })
+  @ApiResponse({ status: 200, description: 'Role retrieved successfully', type: Role })
+  @ApiResponse({ status: 404, description: 'Role not found' })
   async findOne(id: number) {
     try {
       const role = await this.roleModel.findByPk(id);
@@ -50,6 +64,11 @@ export class RoleService {
     }
   }
 
+
+
+  @ApiOperation({ summary: 'Update a role by ID' })
+  @ApiResponse({ status: 200, description: 'Role updated successfully', type: Role })
+  @ApiResponse({ status: 404, description: 'Role not found' })
   async update(id: number, updateRoleDto: UpdateRoleDto) {
     try {
       const role = await this.findOne(id);
@@ -60,6 +79,11 @@ export class RoleService {
     }
   }
 
+
+  
+  @ApiOperation({ summary: 'Delete a role by ID' })
+  @ApiResponse({ status: 200, description: 'Role deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Role not found' })
   async remove(id: number) {
     try {
       const role = await this.findOne(id);

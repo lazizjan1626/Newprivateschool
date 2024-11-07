@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter'
 
 async function start() {
   try {
@@ -15,6 +16,8 @@ async function start() {
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/docs', app, document);
+    app.useGlobalFilters(new HttpExceptionFilter());
+
 
     await app.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);

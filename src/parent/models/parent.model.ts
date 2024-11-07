@@ -1,5 +1,7 @@
-import { Column, DataType, Table,Model } from "sequelize-typescript";
+import { Column, DataType, Table,Model, BelongsToMany } from "sequelize-typescript";
 import { Gender } from "../../other/types";
+import { Student } from "../../sudent/models/sudent.model";
+import { StudentParents } from "./studentparents.model";
 
 interface IParentCreationAttr{
     first_name: string;
@@ -84,5 +86,10 @@ export class Parent extends Model<Parent,IParentCreationAttr> {
         defaultValue: true,
     })
     is_active: boolean;
+
+
+
+  @BelongsToMany(() => Student, () => StudentParents)
+  students: Student[];
 
 }

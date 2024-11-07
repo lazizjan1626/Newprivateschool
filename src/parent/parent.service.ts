@@ -12,10 +12,6 @@ import * as bcrypt from 'bcryptjs';
 export class ParentService {
   constructor(@InjectModel(Parent) private readonly parentModel: typeof Parent,
   private readonly jwtService: JwtService){}
-
-
-  
-
   
   async generateToken(parent: Parent) {
     try {
@@ -50,7 +46,6 @@ export class ParentService {
       gender,
       address,
       relationship,
-      is_active,
 
     } = createParentDto
 
@@ -146,6 +141,7 @@ export class ParentService {
   async logout(authHeader: string, res: Response) {
     try {
         const token = authHeader?.split(' ')[1];
+        console.log(token);
 
         if (!token) {
             return res.status(400).json({ message: 'Token not provided' });
@@ -195,7 +191,17 @@ export class ParentService {
 
   async findAll(res: Response): Promise<Response> {
     try {
-        const parents = await this.parentModel.findAll();
+        const parents = await this.parentModel.findAll(
+          {
+            attributes: [
+              'id',
+               'first_name',
+                'last_name',
+                  'age',
+                    'address',
+                    ],
+          }
+        );
       
         if (parents.length === 0) {
             return res.status(404).json({ message: 'No parents found' });
@@ -230,6 +236,7 @@ export class ParentService {
 
       if (!parent) {
         throw new NotFoundException(`Parent with ID ${id} not found`);
+
       }
 
       await parent.destroy();
@@ -243,8 +250,4 @@ export class ParentService {
       
     }
   }
-
-
-
-
   }

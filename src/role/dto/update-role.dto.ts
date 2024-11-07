@@ -1,7 +1,17 @@
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateRoleDto } from './create-role.dto';
 
 export class UpdateRoleDto extends PartialType(CreateRoleDto) {
-    name?: string;
-    description?: string;
+  
+  @ApiPropertyOptional({
+    description: 'Name of the role (optional for updates)',
+    example: 'Admin',
+  })
+  name?: string;
+
+  @ApiPropertyOptional({
+    description: 'Description of the role (optional for updates)',
+    example: 'Has full access to all resources and can manage other users.',
+  })
+  description?: string;
 }
