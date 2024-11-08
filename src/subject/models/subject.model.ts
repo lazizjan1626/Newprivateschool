@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { Grade } from "../../grades/models/grade.model";
 
 
 interface ISubjectCreationAttr{
@@ -25,5 +26,10 @@ export class Subjects extends Model<Subjects,ISubjectCreationAttr>{
         allowNull: false,
     })
     subjectName: string;
+    
+
+    @HasMany(() => Grade)  
+    grades: Grade[];
+
 
 }

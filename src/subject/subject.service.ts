@@ -4,6 +4,7 @@ import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Subjects } from './models/subject.model';
 import { ApiProperty } from '@nestjs/swagger';
+import { Grade } from '../grades/models/grade.model';
 
 @Injectable()
 export class SubjectService {
@@ -42,7 +43,18 @@ export class SubjectService {
   })
   findOne(id: number) {
     try {
-      const subject = this.subjectModel.findByPk(id);
+      const subject = this.subjectModel.findByPk(id,{
+        include: [{ 
+          model: Grade,
+          as: 'grades',
+          attributes:[
+            'id',
+            'grade',
+            'deteRecorded',
+            'subjectID',
+          ]
+         }],
+      });
 
       if (!subject) {
         throw new Error('Subject not found');

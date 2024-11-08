@@ -9,4 +9,5 @@ export class CreateTeacherDto {
     address: string;
     is_active: boolean;
     roleID:number
+    classID:number
 }

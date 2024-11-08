@@ -1,6 +1,9 @@
-import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { ClassSchedule } from "../../class-schedule/models/class-schedule.modul";
 import { Attendance } from "../../attendance/entities/attendance.model";
+import { Student } from "../../sudent/models/sudent.model";
+import { Enrollment } from "../../enrollments/models/enrollment.model";
+import { Teacher } from "../../teachers/models/teacher.model";
 
 
 interface IClassesCreationAttr{
@@ -55,14 +58,21 @@ export class Class extends Model<Class,IClassesCreationAttr>{
     @BelongsTo(() => ClassSchedule)
     classSchedule: ClassSchedule;
 
-    @ForeignKey(() => Attendance)
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    attendanceID: number;
-    @BelongsTo(() => Attendance)
-    attendance: ClassSchedule;
+
+
+
+    @HasMany(() => Attendance)
+    attendance: Attendance[];
+
+
+    @HasMany(() => Student)
+    students: Student[];
+
+    @HasMany(() => Enrollment)
+    enrollments: Enrollment[];
+
+    @HasMany(() => Teacher)
+    treachers: Teacher[];
 
 
 }

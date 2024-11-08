@@ -12,6 +12,10 @@ import * as bcrypt from 'bcryptjs';
 export class ParentService {
   constructor(@InjectModel(Parent) private readonly parentModel: typeof Parent,
   private readonly jwtService: JwtService){}
+
+
+  
+
   
   async generateToken(parent: Parent) {
     try {
@@ -104,6 +108,7 @@ export class ParentService {
 
       return res.json({ message: 'Token refreshed successfully', 
         accestoken: accessToken
+        
       });
     } catch (error) {
       console.log(error)
@@ -199,6 +204,7 @@ export class ParentService {
                 'last_name',
                   'age',
                     'address',
+                    'relationship',
                     ],
           }
         );

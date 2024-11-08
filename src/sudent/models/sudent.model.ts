@@ -1,7 +1,12 @@
-import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Gender } from "../../other/types";
 import { Parent } from "../../parent/models/parent.model";
 import { StudentParents } from "../../parent/models/studentparents.model";
+import { Fee } from "../../fees/models/fee.model";
+import { Grade } from "../../grades/models/grade.model";
+import { Enrollment } from "../../enrollments/models/enrollment.model";
+import { Attendance } from "../../attendance/entities/attendance.model";
+import { Class } from "../../classes/models/class.model";
 
 interface IStudentCreationAttr{
     firstName: string;
@@ -96,12 +101,22 @@ export class Student extends Model<Student,IStudentCreationAttr>{
     })
     is_active: boolean;
 
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    classID: number;
-
     @BelongsToMany(() => Parent, () => StudentParents)
     parents: Parent[];
+
+    @HasMany(() => Fee)
+    Fee: Fee[];
+
+    @HasMany(() => Grade)
+    Grade: Grade[];
+
+    @HasMany(() => Enrollment)
+    Enrollment: Enrollment[];
+
+    @HasMany(() => Attendance)
+    Attendance: Attendance[];
+
+    @ForeignKey(() => Class)
+    @Column
+    classID: number;
 }

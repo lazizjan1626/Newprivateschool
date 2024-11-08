@@ -54,13 +54,14 @@ export class EnrollmentsService {
   @ApiInternalServerErrorResponse({ description: 'Internal server error occurred' })
   async update(id: number, updateEnrollmentDto: UpdateEnrollmentDto) {
     try {
-      const [affectedRows] = await this.enrollmentModel.update(updateEnrollmentDto, { where: { id } });
-  
-      if (affectedRows === 0) {
+      const affectedRows = await this.enrollmentModel.update(updateEnrollmentDto, { where: { id } });
+      if (!affectedRows) {
         throw new Error('Enrollment not found');
       }
   
-      return { message: 'Enrollment successfully updated' };
+      return { message: 'Enrollment successfully updated',
+        affectedRows: affectedRows
+       };
     } catch (error) {
       throw new Error('Failed to update enrollment with ID ' + id);
     }

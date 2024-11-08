@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Class } from "../../classes/models/class.model";
 
 interface ITeacherCreationAttr{
     firstName: string;
@@ -12,7 +13,7 @@ interface ITeacherCreationAttr{
     is_active: boolean;
     roleID:number
     refreshToken:string;
-    
+    classID:number;
 }
 
 
@@ -93,9 +94,7 @@ export class Teacher extends Model<Teacher,ITeacherCreationAttr>{
     })
     roleID: number;
 
-    @Column({
-        type: DataType.STRING,
-        allowNull: false,
-    })
-    refreshToken: string;
+    @ForeignKey(() => Class)
+    @Column
+    classID: number;
 }

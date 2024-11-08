@@ -1,4 +1,6 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Student } from "../../sudent/models/sudent.model";
+import { Subjects } from "../../subject/models/subject.model";
 
 interface IGradesCreationAttr{
     studentID: number;
@@ -27,19 +29,6 @@ export class Grade extends Model<Grade,IGradesCreationAttr>{
         type: DataType.INTEGER,
         allowNull: false,
     })
-    studentID: number;
-
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    subjectID: number;
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
     grade: number;
 
     @Column({
@@ -55,7 +44,13 @@ export class Grade extends Model<Grade,IGradesCreationAttr>{
     })
     parentview: boolean;
 
+    @ForeignKey(() => Student)
+    @Column
+    studentID: number;
 
+    @ForeignKey(() => Subjects)
+    @Column
+    subjectID: number;
 
 
 }

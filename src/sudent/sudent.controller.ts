@@ -17,6 +17,13 @@ export class SudentController {
   async findAll(@Res() res: Response) {
       return this.sudentService.findAll(res);
   }
+  @Post()
+  async createStudentWithParents(
+    @Body() createStudentDto: any,
+  ) {
+    const { parentIds, ...studentData } = createStudentDto;
+    return this.sudentService.createStudentWithParents(studentData, parentIds);
+  }
 
 
   @Post('login')

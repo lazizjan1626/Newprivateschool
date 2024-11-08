@@ -1,11 +1,13 @@
-import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Class } from "../../classes/models/class.model";
+import { Student } from "../../sudent/models/sudent.model";
 
 
 interface IAttendanceCreationAttr{
     studentID: number;
     attendanceDate:Date;
     status:string;
+    classID:number;
     parentview:boolean;
 }
 
@@ -21,12 +23,6 @@ export class Attendance extends Model<Attendance,IAttendanceCreationAttr>{
         autoIncrement: true,
     })
     id: number;
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    studentID: number;
 
     @Column({
         type: DataType.DATEONLY,
@@ -49,7 +45,13 @@ export class Attendance extends Model<Attendance,IAttendanceCreationAttr>{
     parentview: boolean;
 
 
-    @HasMany(() => Class)
-    class: Class[];
+    @ForeignKey(() => Student)
+    @Column
+    studentID: number;
+    
+
+    @ForeignKey(() => Class)
+    @Column
+    classID: number;
 
 }

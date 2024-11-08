@@ -6,11 +6,46 @@ import { Student } from './models/sudent.model';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 import * as bcrypt from 'bcryptjs';
+import { Parent } from '../parent/models/parent.model';
+import { Gender } from '../other/types';
+import { StudentParents } from '../parent/models/studentparents.model';
+import { Fee } from '../fees/models/fee.model';
+import { Grade } from '../grades/models/grade.model';
+import { Enrollment } from '../enrollments/models/enrollment.model';
+import { Attendance } from '../attendance/entities/attendance.model';
 
 @Injectable()
 export class SudentService {
   constructor(@InjectModel(Student)private readonly studentModel: typeof Student,
+  @InjectModel(Parent) private parentModel: typeof Parent,
   private readonly jwtService: JwtService){}
+
+  async createStudentWithParents(studentData: any, parentIds: number[]) {
+    const student = await this.studentModel.create({
+      firstName: studentData.firstName,
+      lastName: studentData.lastName,
+      birthDate: studentData.birthDate,
+      gender: studentData.gender,
+      adress: studentData.adress,
+      phone_number: studentData.phone_number,
+      email: studentData.email,
+      hashed_password: studentData.password,
+      enrollmentDete: studentData.enrollmentDate,
+      is_active: studentData.is_active,
+      classID: studentData.classID,
+    });
+
+    const parents = await this.parentModel.findAll({
+      where: { id: parentIds },
+    });
+
+    if (!parents || parents.length === 0) {
+      throw new Error('No parents found for the given IDs');
+    }
+
+    await student.$set('parents', parents); 
+    return student;
+  }
 
   async generateToken(student: Student) {
     try {
@@ -187,10 +222,51 @@ export class SudentService {
         return res.status(500).json({ message: 'Internal server error' });
     }
   }
+  
 
   async findOne(id: number): Promise<Student> {
     try {
-      const student = await this.studentModel.findByPk(id);
+      const student = await this.studentModel.findOne({
+        where: { id },
+        include: [
+        {
+          model: Fee,
+          as: 'Fee',
+          attributes: [
+            'id',
+            'ammountDue',
+            'amountPaid',
+            'paymentDate',
+          ],
+        },
+        {
+          model: Grade,
+          as: 'Grade',
+          attributes: [
+            'id',
+            'grade',
+            'deteRecorded',
+          ],
+        },
+        {
+          model: Enrollment,
+          as: 'Enrollment',
+          attributes: [
+            'id',
+            'enrollmentDate',
+          ],
+        },
+        {
+          model:Attendance,
+          as: 'Attendance',
+          attributes: [
+            'id',
+            'status',
+            'attendanceDate',
+          ]
+        }
+      ],
+      });
 
       if (!student) {
         throw new NotFoundException(`Student with ID ${id} not found`);

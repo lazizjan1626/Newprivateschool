@@ -23,12 +23,12 @@ export class TeachersController {
   async logout(@Res() res: Response, @Headers('Authorization') authHeader: string) {
     return await this.teachersService.logout(authHeader, res);
   }
-  
 
-  @Post('refresh-token')
-  async refreshToken(teacherModel: Teacher, @Res() res: Response) {
-    return this.teachersService.refreshToken(teacherModel.refreshToken, res);
+  @Post('token')
+  async refreshToken(@Body('token') token: string, @Res() res: Response) {
+    return this.teachersService.refreshToken(token, res);
   }
+  
 
   //get id 
   // @Get(':id')

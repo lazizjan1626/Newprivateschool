@@ -6,11 +6,13 @@ import { Student } from './models/sudent.model';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StudentParents } from '../parent/models/studentparents.model';
+import { ParentModule } from '../parent/parent.module';
+import { Parent } from '../parent/models/parent.model';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([
-      Student,StudentParents
+      Student,Parent
     ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -20,11 +22,11 @@ import { StudentParents } from '../parent/models/studentparents.model';
         signOptions: { expiresIn: process.env.ACCESS_TOKEN_TIME },
       }),
     }),
-    StudentModule
+    StudentModule,
 
   ],
-  exports: [SudentService],
+  exports: [SudentService,],
   controllers: [SudentController],
-  providers: [SudentService],
+  providers: [SudentService,],
 })
 export class StudentModule {}

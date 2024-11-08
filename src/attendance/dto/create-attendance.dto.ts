@@ -8,6 +8,14 @@ export class CreateAttendanceDto {
   })
   studentID?: number;
 
+
+  @ApiProperty({
+    description: 'ID of the Class',
+    required: false,
+    type: Number,
+})
+  classID?: number;
+
   @ApiProperty({
     description: 'The date of attendance',
     type: Date,

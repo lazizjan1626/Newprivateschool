@@ -7,7 +7,6 @@ import * as bcrypt from 'bcryptjs';
 import { Role } from '../role/models/role.model';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { use } from 'passport';
 @Injectable()
 export class UserService {
   constructor(@InjectModel(User)private readonly userModel: typeof User,
@@ -254,5 +253,5 @@ export class UserService {
 
 
 
-  
+
 }

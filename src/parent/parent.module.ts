@@ -25,7 +25,7 @@ import { ApiTags } from '@nestjs/swagger';
   StudentModule
 
 ],
-  exports: [ParentService],
+  exports: [ParentService,],
   controllers: [ParentController],
   providers: [ParentService],
 })

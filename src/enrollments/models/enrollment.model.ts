@@ -1,4 +1,6 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Student } from "../../sudent/models/sudent.model";
+import { Class } from "../../classes/models/class.model";
 
 interface IEnrollmentsCreationAttr{
     studentID: number;
@@ -24,16 +26,21 @@ export class Enrollment extends Model<Enrollment,IEnrollmentsCreationAttr>{
     id: number;
 
     @Column({
-        type: DataType.INTEGER,
+        type: DataType.DATE,
         allowNull: false,
     })
+    enrollmentDate: Date;
+
+
+    @ForeignKey(() => Student)
+    @Column
     studentID: number;
 
 
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
+    @ForeignKey(() => Class)
+    @Column
     classID: number;
+
+
 
 }

@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { Student } from "../../sudent/models/sudent.model";
 
 
 interface IFeeCreationAttr{
@@ -21,13 +22,6 @@ export class Fee extends Model<Fee,IFeeCreationAttr>{
         autoIncrement: true,
     })
     id: number;
-
-
-    @Column({
-        type: DataType.INTEGER,
-        allowNull: false,
-    })
-    studentID: number;
 
     @Column({
         type: DataType.FLOAT,
@@ -54,5 +48,9 @@ export class Fee extends Model<Fee,IFeeCreationAttr>{
         allowNull: false,
     })
     paymentDate: Date;
+
+    @ForeignKey(() => Student)
+    @Column
+    studentID: number;
 
 }

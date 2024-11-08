@@ -6,6 +6,9 @@ import { Class } from './models/class.model';
 import { ClassSchedule } from '../class-schedule/models/class-schedule.modul';
 import { Attendance } from '../attendance/entities/attendance.model';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Student } from '../sudent/models/sudent.model';
+import { Enrollment } from '../enrollments/models/enrollment.model';
+import { Teacher } from '../teachers/models/teacher.model';
 
 @Injectable()
 export class ClassesService {
@@ -60,6 +63,45 @@ export class ClassesService {
             model: Attendance,
             attributes: ['id', 'status', 'attendanceDate'],
           },
+          {
+            model: Student,
+            attributes: [
+              'id',
+              'firstName',
+              'lastName',
+              'gender',
+              'phone_number',
+              'birthDate',
+              'adress',
+
+            ],
+          },
+          {
+            model:Enrollment,
+            as:'enrollments',
+            attributes: [
+              'id',
+              'enrollmentDate',
+
+            ],
+          },
+          {
+            model: Teacher,
+            attributes: [
+              'id',
+              'firstName',
+              'lastName',
+            ],
+
+          },
+          {
+            model:Teacher,
+            attributes:[
+              'id',
+              'firstName',
+              'lastName',
+            ]
+          }
         ],
       });
 

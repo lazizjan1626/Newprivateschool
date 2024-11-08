@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Teacher } from './models/teacher.model';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import { UpdateTeacherDto } from './dto/update-teacher.dto';
 
 @Injectable()
 export class TeachersService {
@@ -27,11 +28,6 @@ export class TeachersService {
         expiresIn: process.env.REFRESH_TOKEN_TIME || '30d',
       });
 
-      await this.teacherModel.update(
-        { refreshToken },
-        { where: { id: teacher.id } }
-      );
-
       return { accessToken, refreshToken };
       
     } catch (error) {
@@ -52,7 +48,6 @@ export class TeachersService {
         phone,
         hireDate,
         roleID,
-        is_active
       } = createTeacherDto;
 
       const existingEmail = await this.teacherModel.findOne({ where: { email } });
@@ -110,11 +105,6 @@ export class TeachersService {
 
         const { accessToken, refreshToken } = await this.generateToken(user);
 
-        await this.teacherModel.update(
-            { refreshToken },
-            { where: { id: payload.id } }
-        );
-
         res.cookie('access-token', accessToken, { httpOnly: true });
         res.cookie('refresh-token', refreshToken, { httpOnly: true, expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) });
 
@@ -140,11 +130,6 @@ async login(email: string, password: string, res: Response) {
       }
 
       const { accessToken, refreshToken } = await this.generateToken(teacher);
-
-      await this.teacherModel.update(
-          { refreshToken },
-          { where: { id: teacher.id } } 
-      );
 
       res.cookie('access-token', accessToken, { httpOnly: true });
       res.cookie('refresh-token', refreshToken, { httpOnly: true, expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) });
@@ -190,5 +175,75 @@ async login(email: string, password: string, res: Response) {
         console.log(error);
         return res.status(500).json({ message: 'Internal server error' });
     }
+  }
+
+  async findAll(res: Response): Promise<Response> {
+    try {
+        const teacher = await this.teacherModel.findAll();
+      
+        if (teacher.length === 0) {
+            return res.status(404).json({ message: 'No teacehr found' });
+        }
+        return res.json(teacher); 
+    } catch (error) {
+        console.error('Error fetching teacehr:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
+  async findOne(id: number): Promise<Teacher> {
+    try {
+      const teacher = await this.teacherModel.findByPk(id);
+
+      if (!teacher) {
+        throw new NotFoundException(`Teacher with ID ${id} not found`);
+      }
+
+      return teacher;
+      
+    } catch (error) {
+      console.error('Error fetching teacher:', error);
+      throw error;
+      
+    }
+  }
+  async update(id: number, updateTeacherDto: UpdateTeacherDto): Promise<Teacher> {
+    try {
+      const teacehr = await this.teacherModel.findByPk(id);
+
+      if (!teacehr) {
+        throw new NotFoundException(`teacher with ID ${id} not found`);
+      }
+
+      return await teacehr.update(updateTeacherDto);
+      
+    } catch (error) {
+      console.log(error);
+
+      throw error instanceof NotFoundException? error : new InternalServerErrorException('Failed to update teacher');
+      
+    }
+  }
+
+  async remove(id: number): Promise<string> {
+    try {
+      const teacher = await this.teacherModel.findByPk(id);
+
+      if (!teacher) {
+        throw new NotFoundException(`teacehr with ID ${id} not found`);
+
+      }
+
+      await teacher.destroy();
+
+      return (`teacher with ID ${id} deleted successfully`);
+      
+    } catch (error) {
+      console.log(error);
+
+      throw error instanceof NotFoundException? error : new InternalServerErrorException('Failed to delete teacher');
+      
+    }
+
   }
 }

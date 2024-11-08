@@ -20,6 +20,8 @@ export class StudentParents extends Model<StudentParents,IStudentParentCreationA
     @Column
     parentID: number;
 
+    
+
 
 
 }
